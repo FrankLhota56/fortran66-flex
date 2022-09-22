@@ -1,0 +1,14 @@
+Line     1: INTEGER
+Line     1: ID(end)
+Line     2: EOS
+Line     2: ID(end)
+Line     2: '='
+Line     2: INT_LIT(1)
+Line     3: EOS
+Line     3: ID(end)
+Line     4: '='
+Line     5: ID(end)
+Line     6: '+'
+Line     6: INT_LIT(1)
+Line     7: EOS
+Line     7: END

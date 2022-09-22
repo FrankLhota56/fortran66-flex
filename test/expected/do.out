@@ -1,0 +1,16 @@
+Line     4: DO
+Line     4: INT_LIT(99)
+Line     4: ID(i)
+Line     4: '='
+Line     4: INT_LIT(1)
+Line     4: ','
+Line     4: INT_LIT(5)
+Line     5: EOS
+Line     5: ID(do99i)
+Line     5: '='
+Line     5: REAL_LIT(1.500000)
+Line     6: EOS
+Line     6: INT_LIT(99)
+Line     6: CONTINUE
+Line     7: EOS
+Line     7: END
