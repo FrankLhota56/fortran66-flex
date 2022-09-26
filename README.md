@@ -151,7 +151,10 @@ The lack of reserved words significantly complicate finding the key words in For
 1. Assignment statements of the form `v = e`; and
 1. Statement functions that look like an assignment to an array reference.
 
-At the start of the statement, in the `STMT_START` condition, the very first pattern searched for is one that detects these types of statement. The pattern for these statements has an unusually complex trailing context, but detecting this type of statement first avoids the key word detection problems given above.
+At the start of the statement, in the `STMT_START` condition, the very first pattern searched for is one that detects these types of statement. The pattern for these statements has an unusually complex trailing context, but detecting this type of statement first avoids many of the key word detection problems given above.
 
-TODO discuss "dangerous trailing context" errors,
-TODO discuss Hollerith contant continuation
+### Eliminating "dangerous trailing context" Errors
+
+Sometimes, multiple trailing context patterns cannot be properly matched (See [Deficiencies / Bugs](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html#SEC23)). Problematic trailing context patterns will cause `flex` to generate `"dangerous trailing context"` warnings.
+
+To avoid these warning and possibly errors, the patterns for matching statements such as `DO` loops do not use trailing contexts. Instead, enough of the statement is matched to determine when kind of statement we have, then we call `yyless` to resize the buffer to the end of the first token, e.g. the end of the `DO` key word. 
