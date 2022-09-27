@@ -58,7 +58,7 @@ Fortran 66 is one of the few languages that has absolutely no reserved words. Ke
       IF(END) GO TO 9000
       IF(I) = -1
 ```
-In the first statement, the `IF` token is a key word; in the second, the `IF` token is an identifier for an array. 
+In the first statement, the `IF` token is a key word; in the second, the `IF` token is an array identifier.
 
 ### String Literals
 
@@ -83,11 +83,11 @@ The Fortran 66 freewheeling approach to blanks, along with the absence of reserv
 ```
       DO 100 I = 1,5
 ```
-This statement is the start of a DO loop, ending with the statement labeled 100, where the body of the loop is executed with I set to the values 1 through 5 inclusive. Now consider what happens if we replace the comma in this statement with a period:
+This statement is the start of a `DO` loop, ending with the statement labeled 100, where the body of the loop is executed with `I` set to the values 1 through 5 inclusive. Now consider what happens if we replace the comma in this statement with a period:
 ```
       DO 100 I = 1.5
 ```
-This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also almost completely changes the tokens for the statement.
+This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also drastically changes the tokens the scanner should return.
 
 ## Implementation Details
 
@@ -112,7 +112,7 @@ Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get i
 As noted before, the Fortran 66 character set does not include lower case letters, so arguably, the Fortran 66 grammar should require that the programs be written in all caps. That is too ugly to be acceptable by modern standards. Later versions of Fortran are case insensitive.
 
 So should a Fortran 66 compiler be case sensitive? This flex grammar was written to accomidate both caps-only and case insensitive compilers.
-- This Fortran 66 flex grammar uses upper case letters, so this grammer could support an upper case only version of Fortran 66.
+- This Fortran 66 flex grammar uses upper case letters in the patterns, so this grammer could support an upper case only version of Fortran 66.
 - The `Makefile` for this project, however, invokes flex with a command line parameter to generate a case insensitive scanner from this parser. Using this scanner, one could write Fortran 66 programs that are not all shouting.
 
 ### Tokens with Intersperced Blanks
@@ -123,7 +123,7 @@ Most Fortran 66 tokens can have intersperced blanks. The flex grammar for these 
 
 ### Detecting Statement Ends
 
-A Fortran 66 parser requires an indication of statement endings, so this grammar will produce a token `EOS` for the end of statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of Fortran 66 statement. Instead, the end of Fortran 66 is indicated by a change in the line type.
+A Fortran 66 parser requires an indication of statement ending, so this grammar will produce a token `EOS` at the end of every statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of a statement. Instead, the end of Fortran 66 is indicated by a change in the line type.
 
 There are essentially four types of Fortran 66 lines:
 1. Comment line;
@@ -133,7 +133,7 @@ There are essentially four types of Fortran 66 lines:
 
 A Fortran 66 statement ends when the line after the statement text has a type other than Continuation. 
 
-*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the statememt. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will appear on line 104.
+*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statememt line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will appear on line 104.
 
 This grammar tracks the line types in order to determine line endings, as well as when to begin certain start conditions. The type `line_type_t` enumerates these four line types, and the variable `line_type` is set to the type of the current line. The `INITIAL` start condition uses patterns to determine the line type, and return `EOS` when appropriate.
 
@@ -158,3 +158,11 @@ At the start of the statement, in the `STMT_START` condition, the very first pat
 Sometimes, multiple trailing context patterns cannot be properly matched (See [Deficiencies / Bugs](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html#SEC23)). Problematic trailing context patterns will cause `flex` to generate `"dangerous trailing context"` warnings.
 
 To avoid these warning and possibly errors, the patterns for matching statements such as `DO` loops do not use trailing contexts. Instead, enough of the statement is matched to determine when kind of statement we have, then we call `yyless` to resize the buffer to the end of the first token, e.g. the end of the `DO` key word. 
+
+### Building Hollerith Constants
+
+When the start of a Hollerith constant is detected, this scanner computes the text length, then begins the start condition `HOLLERITH`. In this conditon, blanks are significant. While in the `HOLLERITH` condition, statement field text is transferred to an allocated buffer until this buffer grows to the specified length. Once we reach that length, the scanner restores the start condition that was active before beginning `HOLLERITH`, and return a Hollerith constant token with this buffer.
+
+This flex grammar allows a Hollerith constant to span multiple lines. The standard does not explicitly require support for this, but the grammar supports it for two reasons:
+1. There are 1960's code samples with multi-line Hollerith constants; and
+1. If a Hollerith constant is limited to one line, then no such constant could be longer than 63 characters.
