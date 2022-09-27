@@ -16,7 +16,7 @@ fortran66.tab.h: fortran66.y
 fortran66.tab.c: fortran66.tab.h
 
 .PHONY: test
-test: f66dump
+test: f66dump ## Tests grammar using f66dump and test cases.
 	cd test; \
 	$(RM) -r actual; \
 	mkdir actual; \
@@ -27,15 +27,23 @@ test: f66dump
 	diff -r actual expected
 
 .PHONY: debug
-debug:
+debug: ## Builds grammar and f66dump in debug mode.
 	flex -d -i fortran66.l
 	$(MAKE) f66dump
 
 .PHONY: clean
-clean:
+clean: ## Removes all generated files.
 	$(RM) *.o f66dump fortran66.tab.[hc] lex.yy.c
 	$(RM) -r test/actual
 
 .PHONY: package
-package: clean
+package: clean	## Packages sources into a gzip tar file.
 	tar --create --verbose --gzip --file="$(PACKAGE)" $$(find * -type f \! -name "$(PACKAGE)")
+
+
+.PHONY: help
+help: ## Print out a list of available build targets.
+	@echo "Make targets:"
+	@echo
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-14s\033[0m %s\n", $$1, $$2}'
+	@echo
