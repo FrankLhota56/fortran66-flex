@@ -17,7 +17,7 @@
  * - If a line read from `in` is longer than `cardlen` characters, the line will
  *   be truncated to `cardlen` characters.
  * - If the last line in a file is not terminated with a newline character, this
- *   function will still a full card for that line.
+ *   function will still return a full card for that line.
  *
  * When successful, this function will store in `card` exactly `cardlen`
  * characters, followed by a newline character and a null. Make sure that the
