@@ -330,7 +330,6 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     START_STMT(DO);
 }
 
-    /* Will generate "dangerous trailing context" warning */
 <STMT_START>D{WS}O{WS}U{WS}B{WS}L{WS}E/{SEP}P{WS}R{WS}E{WS}C{WS}I{WS}S{WS}I{WS}O{WS}N {
     TRIM_TO_TOKEN(DOUBLE);
     START_STMT(DOUBLE);
@@ -348,7 +347,6 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     START_STMT_IN_STATE(FORMAT, FORMAT_STMT);
 }
 
-    /* Will generate "dangerous trailing context" warning */
 <STMT_START>G{WS}O{SEP}T{WS}O {
     TRIM_TO_TOKEN(GO);
     START_STMT_IN_STATE(GO, EXPECT_TO);
