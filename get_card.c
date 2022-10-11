@@ -44,13 +44,16 @@ char *get_card(FILE *in, char *card, size_t cardlen, size_t tablen)
         case EOF:
             if (pos == 0)
             {
-                /* The file ended with the last card, return EOF */
+                /*
+                 * All of the file returned in previous cards,
+                 * return NULL to indicate end of file
+                 */
                 card[0] = '\0';
                 return NULL;
             }
             /*
              * The last line in the file did not end with a newline; create a
-             * full card for this line, will return EOF next time.
+             * full card for this line, will return NULL next time.
              */
             pos = padcard(card, pos, cardlen);
             break;
