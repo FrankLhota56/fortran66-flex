@@ -22,7 +22,7 @@ test: f66dump ## Tests grammar using f66dump and test cases.
 	mkdir actual; \
 	for F in *.for; do \
 	   echo "Parsing $$F..."; \
-	   ../f66dump $$F > actual/$${F/%.for/.out}; \
+	   ../f66dump $$F > actual/$${F/%.for/.out} 2> actual/$${F/%.for/.err}; \
 	done; \
 	diff -r actual expected
 
