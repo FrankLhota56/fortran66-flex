@@ -123,7 +123,7 @@ Most Fortran 66 tokens can have intersperced blanks. The flex grammar for these 
 
 ### Detecting Statement Ends
 
-A Fortran 66 parser requires an indication of statement ending, so this grammar will produce a token `EOS` at the end of every statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of a statement. Instead, the end of Fortran 66 is indicated by a change in the line type.
+A Fortran 66 parser requires an indication of statement ending, so this grammar will produce a token `EOS` at the end of every statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of a statement. Instead, the end of a Fortran 66 statement is indicated by a change in the line type.
 
 There are essentially four types of Fortran 66 lines:
 1. Comment line;
