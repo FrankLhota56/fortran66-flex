@@ -1,0 +1,8 @@
+*.err
+*.o
+.gitignore
+f66dump
+fortran66.tab.c
+fortran66.tab.h
+lex.yy.c
+test/actual
