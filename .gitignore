@@ -1,4 +1,5 @@
 *.o
+*.tgz
 .gitignore
 f66dump
 fortran66.tab.c
