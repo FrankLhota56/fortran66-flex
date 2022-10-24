@@ -194,7 +194,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     BEGIN(INITIAL);
 }
 
-<INITIAL>{COMMENT}.*$ {
+<INITIAL>{COMMENT}.*\n {
     switch(swap_line_type(LINETYPE_COMMENT)) {
     case LINETYPE_INITIAL:
     case LINETYPE_CONTINUATION:
@@ -233,7 +233,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     }
 }
 
-<INITIAL>{CONT_LINE} {
+<INITIAL>^{CONT_LINE} {
     switch (swap_line_type(LINETYPE_CONTINUATION)) {
     case LINETYPE_INITIAL:
     case LINETYPE_CONTINUATION:
@@ -262,18 +262,6 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
          */
         yyless(0);
         return EOS;
-    }
-}
-
-<INITIAL><<EOF>> {
-    switch (line_type) {
-    case LINETYPE_INITIAL:
-    case LINETYPE_CONTINUATION:
-        line_type = LINETYPE_END;
-        return EOS;
-    default:
-        yyterminate();
-        break;
     }
 }
 
