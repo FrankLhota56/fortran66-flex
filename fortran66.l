@@ -66,6 +66,13 @@ static void read_id(const char *yytext);
 static int continuation_line_count = 0;
 
 /*
+ * MULTI_LINE_HOLLERITH_LIT should be defined to allow a Hollerith literal
+ * should be allowed to continue onto the multiple cards.
+ */
+#define MULTI_LINE_HOLLERITH_LIT 1
+/* #undef MULTI_LINE_HOLLERITH_LIT 1 */
+
+/*
  * hollerith_start, hollerith_pos, and hollerith_end are used to build Hollerith
  * constants:
  * - hollerith_start is the start of the allocated buffer for this constant;
@@ -158,8 +165,17 @@ static field_desc_t parse_other_field_desc(const char *text);
 /* EXPECT_OCTAL condition expects the next token to be an octal number */
 %s EXPECT_OCTAL
 
+
+
+
+/* First character of comment lines;                                          */
+/* The Fortran 66 standard specifies that comment lines start with `C`,       */
+/* but many contemporary variants of Fortran 66, as well as later versions of */
+/* Fortran also allowed comment lines to start with `*` or `!`.               */
+COMMENT     [C*!]
+
 /* CONT_LINE matches the start of a continuation line */
-CONT_LINE   .{5}[^ 0]
+CONT_LINE   .{5}[^ 0\n]
 
 /* WS matches the spaces between, and often inside, tokens */
 WS          " "*
@@ -167,12 +183,6 @@ WS          " "*
 SEP         (" "|"\n"{CONT_LINE})*
 /* ID matches a Fortran 66 identifier */
 ID          [[:alpha:]]({WS}[[:alnum:]]){0,5}
-
-/* First character of comment lines;                                          */
-/* The Fortran 66 standard specifies that comment lines start with `C`,       */
-/* but many contemporary variants of Fortran 66, as well as later versions of */
-/* Fortran also allowed comment lines to start with `*` or `!`.               */
-COMMENT     [C*!]
 
 BASIC_INT   [[:digit:]]({WS}[[:digit:]])*
 
@@ -233,7 +243,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     }
 }
 
-<INITIAL>^{CONT_LINE} {
+<INITIAL>{CONT_LINE} {
     switch (swap_line_type(LINETYPE_CONTINUATION)) {
     case LINETYPE_INITIAL:
     case LINETYPE_CONTINUATION:
@@ -262,6 +272,18 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
          */
         yyless(0);
         return EOS;
+    }
+}
+
+<INITIAL><<EOF>> {
+    switch (line_type) {
+    case LINETYPE_INITIAL:
+    case LINETYPE_CONTINUATION:
+        line_type = LINETYPE_END;
+        return EOS;
+    default:
+        yyterminate();
+        break;
     }
 }
 
@@ -407,9 +429,13 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
 }
 
 <STMT_REST,FORMAT_STMT>{BASIC_INT}{WS}"H" {
-    size_t len = (size_t) parse_integer(yytext, yytext + yyleng - 1);
+    const int len = parse_integer(yytext, yytext + yyleng - 1);
 
-    hollerith_start = calloc(len + 1, sizeof(char));
+    if (len <= 0) {
+        YY_FATAL_ERROR("Hollerith literal must have positive length");
+    }
+
+    hollerith_start = calloc((size_t)len + 1, sizeof(char));
     hollerith_end = hollerith_start + len;
     hollerith_pos = hollerith_start;
 
@@ -546,6 +572,13 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
 
 <HOLLERITH>.+ {
     size_t remaining = hollerith_end - hollerith_pos;
+
+    #ifndef MULTI_LINE_HOLLERITH_LIT
+    if (yyleng < remaining) {
+        YY_FATAL_ERROR("Hollerith constant is incomplete");
+    }
+    #endif /* ndef MULTI_LINE_HOLLERITH_LIT */
+
     if (yyleng > remaining) {
         yyless(remaining);
     }
@@ -584,8 +617,11 @@ line_type_t swap_line_type(line_type_t new_type)
 {
     const line_type_t old_type = line_type;
 
-    if (new_type != LINETYPE_CONTINUATION && hollerith_pos != NULL)
+    #ifdef MULTI_LINE_HOLLERITH_LIT
+    if (new_type != LINETYPE_CONTINUATION && hollerith_pos != NULL) {
         YY_FATAL_ERROR("Hollerith constant is incomplete");
+    }
+    #endif /* def MULTI_LINE_HOLLERITH_LIT */
 
     line_type = new_type;
     return old_type;

@@ -166,3 +166,5 @@ When the start of a Hollerith constant is detected, this scanner computes the te
 This flex grammar allows a Hollerith constant to span multiple lines. The standard does not explicitly require support for this, but the grammar supports it for two reasons:
 1. There are 1960's code samples with multi-line Hollerith constants; and
 1. If a Hollerith constant is limited to one line, then no such constant could be longer than 63 characters.
+
+To change this grammar so that Hollerith literals are restricted to a single line, comment out the definition of the macro `MULTI_LINE_HOLLERITH_LIT` in `fortran66.l`.
