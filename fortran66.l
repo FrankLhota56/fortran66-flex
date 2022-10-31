@@ -102,7 +102,7 @@ static int token_length(const char* token, const char* text);
 static int curr_stmt = END;
 /*
  * START_STMT_IN_STATE sets the current statement type and starts a given
- * start condition 
+ * start condition
  */
 #define START_STMT_IN_STATE(__Token, __State) do {  \
     BEGIN(__State);                                 \
@@ -145,7 +145,7 @@ static field_desc_t parse_other_field_desc(const char *text);
 /* when the current line ends the previous statement */
 
 /* STMT_LABEL condition scans statement label from label field */
-%s STMT_LABEL  
+%s STMT_LABEL
 
 /* STMT_START condition scans first token of a statement */
 %s STMT_START

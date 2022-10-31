@@ -197,7 +197,7 @@ if_statement_action:
   | CALL ID opt_arglist
   | ENDFILE io_unit
   | GO TO INT_LIT
-  | GO TO ID ',' '(' label_list ')' 
+  | GO TO ID ',' '(' label_list ')'
   | GO TO '(' label_list ')' ',' ID
   | IF '(' arithmetic_expression ')' INT_LIT ',' INT_LIT ',' INT_LIT
   | PAUSE opt_octal
@@ -387,7 +387,7 @@ primary:
   | INT_LIT
   | REAL_LIT
   | DBL_PREC_LIT
-  | ID 
+  | ID
   | function_call
   ;
 

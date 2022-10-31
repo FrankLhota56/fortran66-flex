@@ -2,11 +2,11 @@
 
 Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. Is a Lex grammar for Fortran 66 even possible?
 
-This project proves that such a grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex. 
+This project proves that such a grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex.
 
 ## The World Where Fortran 66 Was Developed (TLDR)
 
-To understand the quirky nature of Fortran 66, we need to take a quick review of the radically different nature of software development in the early decades of software programming. 
+To understand the quirky nature of Fortran 66, we need to take a quick review of the radically different nature of software development in the early decades of software programming.
 
 The software development process was quite different half a century ago. Before Fortran, most programs were written in assembler. In the early decades of computers, programs were often hand written on coding sheets; these sheets would then be handed to card punch operators that would turn the program into a deck of Hollerith (punch) cards, then these cards would be processed by the assembler / compiler.
 
@@ -22,7 +22,7 @@ The novel nature of the Fortran 66 makes it a particularly difficult to tokenize
 
 Unlike a line in a text file, a Hollerith card has a fixed length. The most common card length was 80 characters, but cards as short as 72 characters were in use when the standard was written. So, the language standard specifies that each program line is 72 characters long. If you are using longer cards, then anything past column 72 is ignored.
 
-Needless to say, this length requirement makes no sense when the sources are in the form of text files rather than card decks. Also, Lex / Flex does not have implicit support for ignoring everything past a certain column. 
+Needless to say, this length requirement makes no sense when the sources are in the form of text files rather than card decks. Also, Lex / Flex does not have implicit support for ignoring everything past a certain column.
 
 ### Non-Comment Lines Have Fixed Fields
 
@@ -105,7 +105,7 @@ If successful, `get_card` returns a buffer with the line adjusted to card length
 This function also provides support for expanding tab characters. Tabs are not used on Hollerith cards, but they are quite useful in modern text files, especially when you need to place text in particular fields. The `get_card` function takes a parameter for the length of a tab stop. If this parameter is positive, then each tab is converted into one or more blanks to get to the next tab stop. The line length adjustment is done after any tab expansion.
 
 #### Defining `YY_INPUT` for Card Input
-Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `get_card` function. The `get_card` calls in this macro use tab stops of length 6, meaning that if a line that starts with a tab, then the rest of the line is in the statement field. 
+Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `get_card` function. The `get_card` calls in this macro use tab stops of length 6, meaning that if a line that starts with a tab, then the rest of the line is in the statement field.
 
 ### Case Sensitivity
 
@@ -117,9 +117,9 @@ So should a Fortran 66 compiler be case sensitive? This flex grammar was written
 
 ### Tokens with Intersperced Blanks
 
-Most Fortran 66 tokens can have intersperced blanks. The flex grammar for these tokens language has to reflect this. 
+Most Fortran 66 tokens can have intersperced blanks. The flex grammar for these tokens language has to reflect this.
 - The Fortran 66 patterns for the various numeric literals include blanks among the characters that can be part of the token; these values are ignored to obtain the numeric value of the token.
-- Identifiers or literals are detected by patterns that include possible embedded blanks. To put identifiers into canonical form, these blanks are squeezed out and the letters are lower cased.  
+- Identifiers or literals are detected by patterns that include possible embedded blanks. To put identifiers into canonical form, these blanks are squeezed out and the letters are lower cased.
 
 ### Detecting Statement Ends
 
@@ -131,7 +131,7 @@ There are essentially four types of Fortran 66 lines:
 1. Initial line (start of a statement); and
 1. Continuation line (continue the statement on the previous line).
 
-A Fortran 66 statement ends when the line after the statement text has a type other than Continuation. 
+A Fortran 66 statement ends when the line after the statement text has a type other than Continuation.
 
 *Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statememt line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will appear on line 104.
 
@@ -147,7 +147,7 @@ To return these tokens in the appropriate order, there is a start state `STMT_LA
 
 ### Detecting Key Words
 
-The lack of reserved words significantly complicate finding the key words in Fortran 66 code. The key to making this distinction is that virtually all Fortran 66 key words appear at the start of the statement. The only Fortran 66 statements that start with an identifier instead of a key word are: 
+The lack of reserved words significantly complicate finding the key words in Fortran 66 code. The key to making this distinction is that virtually all Fortran 66 key words appear at the start of the statement. The only Fortran 66 statements that start with an identifier instead of a key word are:
 1. Assignment statements of the form `v = e`; and
 1. Statement functions that look like an assignment to an array reference.
 
@@ -157,7 +157,7 @@ At the start of the statement, in the `STMT_START` condition, the very first pat
 
 Sometimes, multiple trailing context patterns cannot be properly matched (See [Deficiencies / Bugs](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html#SEC23)). Problematic trailing context patterns will cause `flex` to generate `"dangerous trailing context"` warnings.
 
-To avoid these warning and possibly errors, the patterns for matching statements such as `DO` loops do not use trailing contexts. Instead, enough of the statement is matched to determine when kind of statement we have, then we call `yyless` to resize the buffer to the end of the first token, e.g. the end of the `DO` key word. 
+To avoid these warning and possibly errors, the patterns for matching statements such as `DO` loops do not use trailing contexts. Instead, enough of the statement is matched to determine when kind of statement we have, then we call `yyless` to resize the buffer to the end of the first token, e.g. the end of the `DO` key word.
 
 ### Building Hollerith Constants
 
