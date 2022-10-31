@@ -1,5 +1,5 @@
 C
-C GO TO / Label Test 
+C GO TO / Label Test
 C
 090   ASSIGN 100 TO I2
       Ass ign 99  To  i 1
