@@ -1,6 +1,6 @@
 # Fortran 66 Flex Grammar
 
-Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex.
+Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex.
 
 ## The World Where Fortran 66 Was Developed (TLDR)
 
