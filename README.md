@@ -1,8 +1,6 @@
 # Fortran 66 Flex Grammar
 
-Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. Is a Lex grammar for Fortran 66 even possible?
-
-This project proves that such a grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex.
+Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex.
 
 ## The World Where Fortran 66 Was Developed (TLDR)
 
@@ -14,7 +12,7 @@ Early assembler programs would expect that parts of an instruction, such as the 
 
 ## Why Scanning Fortran 66 Tokens is Hard
 
-The [Fortran 66 standard](https://archive.org/details/ansi-x-3.9-1966-fortran-66) is quite different from any current language, including current versions of Fortran. This standard predates many innovations that have become standard. Other unusual Fortran 66 features are motivated by the coding sheet / Hollerith card process of that era.
+The [Fortran 66 standard](https://archive.org/details/ansi-x-3.9-1966-fortran-66) is quite different from any current language, including recent versions of Fortran. This standard predates many innovations that have become standard. Other unusual Fortran 66 features are motivated by the coding sheet / Hollerith card process of that era.
 
 The novel nature of the Fortran 66 makes it a particularly difficult to tokenize, for the following reasons.
 
@@ -31,7 +29,7 @@ A Fortran 66 line that starts with the character 'C' is a comment, and the rest 
 | Field Name   | Columns | Description     |
 |--------------|---------|-----------------|
 | Label        | 1 - 5   | Label for the statement on this line |
-| Continuation | 6       | Specifies if the statement on the previous line is continued here |
+| Continuation | 6       | Specifies if this line continues statement on previous line |
 | Statement    | 7 - 72  | Statement contents |
 
 This field approach provides numerous problems for the token scanner.
@@ -49,7 +47,7 @@ Due to the limitations of some of the platforms available in 1966, the Fortran 6
 
 Because this limited character set leaves out lower case letters, virtually all Fortran 66 code samples are written in all caps, which is now viewed as shouting. Also absent from this limited character set is the horizontal tab, so those cannot be used to get text into the proper field.
 
-The Fortran 66 character set lacks many of the characters used comparison and logical operators, such as `<` or `|`. The Fortran 66 version of these operators consist of identifiers placed between two periods, for example the "less than" operator in Fortran 66 is `.LT.` instead of `<`. Given the use of periods in real constants, this can create some tricky situations.
+The Fortran 66 character set lacks many of the characters used comparison and logical operators, such as `<` or `|`. The Fortran 66 version of these operators consist of identifiers placed between two periods, for example the "less than" operator in Fortran 66 is `.LT.` instead of `<`. Given the use of periods in real constants, this can create some tricky problems.
 
 ### No Reserved Words
 
