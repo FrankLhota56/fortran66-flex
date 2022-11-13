@@ -275,18 +275,6 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     }
 }
 
-<INITIAL><<EOF>> {
-    switch (line_type) {
-    case LINETYPE_INITIAL:
-    case LINETYPE_CONTINUATION:
-        line_type = LINETYPE_END;
-        return EOS;
-    default:
-        yyterminate();
-        break;
-    }
-}
-
 <STMT_LABEL>[ [:digit:]]{5}[ 0] {
     BEGIN(STMT_START);
     yylval.integer = parse_integer(yytext, yytext + 5);
