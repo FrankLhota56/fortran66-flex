@@ -70,7 +70,7 @@ static int continuation_line_count = 0;
  * should be allowed to continue onto the multiple cards.
  */
 #define MULTI_LINE_HOLLERITH_LIT 1
-/* #undef MULTI_LINE_HOLLERITH_LIT 1 */
+/* #undef MULTI_LINE_HOLLERITH_LIT */
 
 /*
  * hollerith_start, hollerith_pos, and hollerith_end are used to build Hollerith
