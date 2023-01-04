@@ -66,8 +66,8 @@ static void read_id(const char *yytext);
 static int continuation_line_count = 0;
 
 /*
- * MULTI_LINE_HOLLERITH_LIT should be defined to allow a Hollerith literal
- * should be allowed to continue onto the multiple cards.
+ * MULTI_LINE_HOLLERITH_LIT should be defined to allow a Hollerith literal to
+ * continue onto the multiple cards.
  */
 #define MULTI_LINE_HOLLERITH_LIT 1
 /* #undef MULTI_LINE_HOLLERITH_LIT */
@@ -118,8 +118,7 @@ static int curr_stmt = END;
 #define CURR_STMT() (curr_stmt)
 
 /*
- * if_paren_level is used to determine when the grammer reaches the end of an IF
- * statement condition
+ * if_paren_level is the parentheses level when scanning an IF statement condition.
  */
 static int if_paren_level = 0;
 
@@ -142,7 +141,7 @@ static field_desc_t parse_other_field_desc(const char *text);
 /* DEFINITIONS */
 
 /* INITIAL start condition is used to determine line type, and return EOS */
-/* when the current line ends the previous statement */
+/* when the current line ends the previous statement                      */
 
 /* STMT_LABEL condition scans statement label from label field */
 %s STMT_LABEL
@@ -164,9 +163,6 @@ static field_desc_t parse_other_field_desc(const char *text);
 %s IF_STMT
 /* EXPECT_OCTAL condition expects the next token to be an octal number */
 %s EXPECT_OCTAL
-
-
-
 
 /* First character of comment lines;                                          */
 /* The Fortran 66 standard specifies that comment lines start with `C`,       */
@@ -249,7 +245,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     case LINETYPE_CONTINUATION:
         break;
     default:
-        YY_FATAL_ERROR("Misplaced continue statement");
+        YY_FATAL_ERROR("Misplaced continuation line");
         break;
     }
 
