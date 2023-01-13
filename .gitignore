@@ -2,7 +2,7 @@
 *.tgz
 .gitignore
 f66dump
-fortran66.tab.c
-fortran66.tab.h
+y.tab.c
+y.tab.h
 lex.yy.c
 test/actual

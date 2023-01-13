@@ -2,18 +2,18 @@ PACKAGE ?= fortran66.tgz
 
 f66dump: f66dump.o lex.yy.o get_card.o
 	$(CC) -o $@ $^ -L/usr/local/opt/flex/lib -lfl -lm
-f66dump.o: f66dump.c field_desc.h fortran66.tab.h
+f66dump.o: f66dump.c field_desc.h y.tab.h
 
-lex.yy.o: lex.yy.c get_card.h fortran66.tab.h
+lex.yy.o: lex.yy.c get_card.h y.tab.h
 lex.yy.c: fortran66.l
 	flex -i $<
 
 get_card.o: get_card.c get_card.h
 
-fortran66.tab.o: fortran66.tab.c field_desc.h fortran66.tab.h
-fortran66.tab.h: fortran66.y
-	bison -d $<
-fortran66.tab.c: fortran66.tab.h
+y.tab.o: y.tab.c field_desc.h y.tab.h
+y.tab.h: fortran66.y
+	bison -d -o y.tab.c $<
+y.tab.c: y.tab.h
 
 .PHONY: test
 test: f66dump ## Tests grammar using f66dump and test cases.
@@ -33,7 +33,7 @@ debug: ## Builds grammar and f66dump in debug mode.
 
 .PHONY: clean
 clean: ## Removes all generated files.
-	$(RM) *.o f66dump fortran66.tab.[hc] lex.yy.c
+	$(RM) *.o f66dump y.tab.[hc] lex.yy.c
 	$(RM) -r test/actual
 
 .PHONY: package

@@ -6,8 +6,8 @@
 #include <string.h>
 
 #include "field_desc.h"
-#include "fortran66.tab.h"
 #include "get_card.h"
+#include "y.tab.h"
 
 /*
  * line_type_tag enumerates the Fortran 66 lines types documented in section 3.3
@@ -168,30 +168,30 @@ static field_desc_t parse_other_field_desc(const char *text);
 /* The Fortran 66 standard specifies that comment lines start with `C`,       */
 /* but many contemporary variants of Fortran 66, as well as later versions of */
 /* Fortran also allowed comment lines to start with `*` or `!`.               */
-COMMENT     [C*!]
+COMMENT     ([C*!])
 
 /* CONT_LINE matches the start of a continuation line */
-CONT_LINE   .{5}[^ 0\n]
+CONT_LINE   (.{5}[^ 0\n])
 
 /* WS matches the spaces between, and often inside, tokens */
-WS          " "*
+WS          (" "*)
 /* SEP matches the characters separating most tokens */
-SEP         (" "|"\n"{CONT_LINE})*
+SEP         ((" "|"\n"({CONT_LINE}))*)
 /* ID matches a Fortran 66 identifier */
-ID          [[:alpha:]]({WS}[[:alnum:]]){0,5}
+ID          ([[:alpha:]](({WS}[[:alnum:]]){0,5}))
 
-BASIC_INT   [[:digit:]]({WS}[[:digit:]])*
+BASIC_INT   ([[:digit:]]([ [:digit:]]*))
 
-BASIC_REAL  ([[:digit:]][ [:digit:]]*\.({WS}[[:digit:]])*)|(\.[ [:digit:]]*[[:digit:]])
+BASIC_REAL  (({BASIC_INT}{WS}"."(({WS}{BASIC_INT})?))|("."{WS}{BASIC_INT}))
 
-SP_EXP      {WS}[Ee]{WS}([-+]{WS})?[[:digit:]]({WS}[[:digit:]])*
-SP_REAL     ({BASIC_REAL}({SP_EXP})?)|({BASIC_INT}{SP_EXP})
+SP_EXP      ({WS}[Ee]{WS}(([-+]{WS})?)[[:digit:]](({WS}[[:digit:]])*))
+SP_REAL     (({BASIC_REAL}({SP_EXP}?))|({BASIC_INT}{SP_EXP}))
 
-DP_EXP      {WS}[Dd]{WS}([-+]{WS})?[[:digit:]]({WS}[[:digit:]])*
-DP_REAL     ({BASIC_REAL}|{BASIC_INT}){DP_EXP}
+DP_EXP      ({WS}[Dd]{WS}(([-+]{WS})?)[[:digit:]](({WS}[[:digit:]])*))
+DP_REAL     (({BASIC_REAL}|{BASIC_INT}){DP_EXP})
 
-SUBSCRIPT   {BASIC_INT}|({BASIC_INT}{SEP}"*"{SEP})?{ID}({SEP}[-+]{SEP}{BASIC_INT})?
-ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
+SUBSCRIPT   ({BASIC_INT}|({BASIC_INT}{SEP}"*"{SEP})?{ID}({SEP}[-+]{SEP}{BASIC_INT})?)
+ARRAY_IND   ("("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")")
 
 %%
 
@@ -256,7 +256,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     BEGIN(prev_state);
 }
 
-<INITIAL>" "{6,}E{WS}N{WS}D{WS}$ {
+<INITIAL>" "{6,}E{WS}N{WS}D{WS}/"\n" {
     switch (swap_line_type(LINETYPE_END)) {
     case LINETYPE_COMMENT:
     case LINETYPE_END:
@@ -434,13 +434,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
      *
      * The scanner should *not* make a real constant out of the sequence `0 .`!
      */
-<STMT_REST>{BASIC_INT}/{WS}"."{WS}([A-Z]{WS}){2,3}"." {
-    yylval.integer = PARSE_INTEGER(yytext);
-
-    return INT_LIT;
-}
-
-<STMT_REST>{BASIC_INT} {
+<STMT_REST>{BASIC_INT}/{WS}"."{WS}(([A-Z]{WS}){2,3})"." {
     yylval.integer = PARSE_INTEGER(yytext);
 
     return INT_LIT;
@@ -463,6 +457,12 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     }
     sscanf(buffer, "%lf", &yylval.dbl_pres);
     return DBL_PREC_LIT;
+}
+
+<STMT_REST>{BASIC_INT} {
+    yylval.integer = PARSE_INTEGER(yytext);
+
+    return INT_LIT;
 }
 
 <STMT_REST>"."{WS}F{WS}A{WS}L{WS}S{WS}E{WS}"." {
@@ -513,7 +513,7 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     START_STMT(DATA);
 }
 
-<EXPECT_OCTAL>[0-7]({WS}[0-7]){0,4} {
+<EXPECT_OCTAL>[0-7](({WS}[0-7]){0,4}) {
     char buffer[6];
 
     CUT_WHITESPACE(buffer, yytext);
@@ -590,7 +590,11 @@ ARRAY_IND   "("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")"
     BEGIN(STMT_START);
 }
 
-.   fprintf(stderr, "Unrecognized character: %s\n", yytext);
+. {
+    char msg[32];
+    sprintf(msg, "Unrecognized character: %s\n", yytext);
+    YY_FATAL_ERROR(msg);
+}
 %%
 
 /* USER CODE */

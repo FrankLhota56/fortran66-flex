@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "field_desc.h"
-#include "fortran66.tab.h"
+#include "y.tab.h"
 
 extern FILE *yyin;
 extern int yylineno;
