@@ -1,6 +1,6 @@
 # Fortran 66 Flex Grammar
 
-Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of Lex, with some helpful improvements. This grammar has not been tested with Lex, but an attempt was made to avoid Flex features not available in Lex.
+Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of lex, with some helpful improvements. This grammar also works for flex run in original lex compatibility mode, and in POSIX lex compatability mode.
 
 ## The World Where Fortran 66 Was Developed (TLDR)
 
@@ -64,7 +64,7 @@ String literals, called Hollerith constants in the Fortran 66 standard, have a v
 ```
 13HHELLO, WORLD.
 ```
-where 13 indicates the length of the string, and the 13 characters after the 'H' are the characters of the string.
+where 13 indicates the length of the string, and the 13 characters after the first 'H' are the characters of the string.
 
 There is no regular expression for matching a Hollerith constant. This is a real problem for the token scanner. Fortunately, these constants can only be used in limited situations, so this problem was not a deal killer. Parsing Hollerith constants, however, is more difficult that parsing more conventional string literals.
 
@@ -85,7 +85,7 @@ This statement is the start of a `DO` loop, ending with the statement labeled 10
 ```
       DO 100 I = 1.5
 ```
-This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also drastically changes the tokens the scanner should return.
+This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also almost completely changes the tokens the scanner should return.
 
 ## Implementation Details
 
@@ -111,7 +111,7 @@ As noted before, the Fortran 66 character set does not include lower case letter
 
 So should a Fortran 66 compiler be case sensitive? This flex grammar was written to accomidate both caps-only and case insensitive compilers.
 - This Fortran 66 flex grammar uses upper case letters in the patterns, so this grammer could support an upper case only version of Fortran 66.
-- The `Makefile` for this project, however, invokes flex with a command line parameter to generate a case insensitive scanner from this parser. Using this scanner, one could write Fortran 66 programs that are not all shouting.
+- Every `Makefile` for this project, however, invokes flex with a command line parameter to generate a case insensitive scanner from this parser. Using this scanner, one could write Fortran 66 programs that are not all shouting.
 
 ### Tokens with Intersperced Blanks
 
@@ -119,7 +119,7 @@ Most Fortran 66 tokens can have intersperced blanks. The flex grammar for these 
 - The Fortran 66 patterns for the various numeric literals include blanks among the characters that can be part of the token; these values are ignored to obtain the numeric value of the token.
 - Identifiers or literals are detected by patterns that include possible embedded blanks. To put identifiers into canonical form, these blanks are squeezed out and the letters are lower cased.
 
-### Detecting Statement Ends
+### Detecting End of Statement
 
 A Fortran 66 parser requires an indication of statement ending, so this grammar will produce a token `EOS` at the end of every statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of a statement. Instead, the end of a Fortran 66 statement is indicated by a change in the line type.
 

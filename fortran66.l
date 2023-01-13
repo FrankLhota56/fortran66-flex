@@ -434,7 +434,9 @@ ARRAY_IND   ("("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")")
      *
      * The scanner should *not* make a real constant out of the sequence `0 .`!
      */
-<STMT_REST>{BASIC_INT}/{WS}"."{WS}(([A-Z]{WS}){2,3})"." {
+<STMT_REST>{BASIC_INT}{WS}"."{WS}(([A-Z]{WS}){2,3})"." {
+    const int dot_idx = strchr(yytext, '.') - yytext;
+    yyless(dot_idx);
     yylval.integer = PARSE_INTEGER(yytext);
 
     return INT_LIT;
