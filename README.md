@@ -34,7 +34,7 @@ A Fortran 66 line that starts with the character 'C' is a comment, and the rest 
 
 This field approach provides numerous problems for the token scanner.
 - A character's meaning depends on which field it occurs.
-- The continuaion field needs to be examined to determine if the statement on the previous line has reached its end - even if it is preceded by the label for the next statement.
+- The continuation field needs to be examined to determine if the statement on the previous line has reached its end - even if it is preceded by the label for the next statement.
 - If column 6 indicates that this line is a continuation of the previous line, then columns 1 through 5 are to be ignored, and could contain anything.
 
 ### Limited Character Set
