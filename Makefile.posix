@@ -12,7 +12,7 @@ get_card.o: get_card.c get_card.h
 
 y.tab.o: y.tab.c field_desc.h y.tab.h
 y.tab.h: fortran66.y
-	bison -d -t -o y.tab.c $<
+	bison -d -y $<
 y.tab.c: y.tab.h
 
 .PHONY: test
