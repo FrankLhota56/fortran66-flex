@@ -131,7 +131,7 @@ There are essentially four types of Fortran 66 lines:
 
 A Fortran 66 statement ends when the line after the statement text has a type other than Continuation.
 
-*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statememt line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will appear on line 104.
+*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statement line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will appear on line 104.
 
 This grammar tracks the line types in order to determine line endings, as well as when to begin certain start conditions. The type `line_type_t` enumerates these four line types, and the variable `line_type` is set to the type of the current line. The `INITIAL` start condition uses patterns to determine the line type, and return `EOS` when appropriate.
 
