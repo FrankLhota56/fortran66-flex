@@ -10,6 +10,6 @@
 | field_desc.h | Defines type for Fortran 66 field descriptor |
 | fortran66.l | Fortran 66 `flex` grammar |
 | fortran66.y | Fortran 66 `bison` grammar |
-| get_card.c | Implements simulated Hollerith card reader function `get_card` |
-| get_card.h | Declares simulated Hollerith card reader function `get_card` |
+| getcard.c | Implements simulated Hollerith card reader function `getcard` |
+| getcard.h | Declares simulated Hollerith card reader function `getcard` |
 | test | Fortran 66 test data |

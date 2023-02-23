@@ -1,14 +1,14 @@
 PACKAGE ?= fortran66.tgz
 
-f66dump: f66dump.o lex.yy.o get_card.o
+f66dump: f66dump.o lex.yy.o getcard.o
 	$(CC) -o $@ $^ -L/usr/local/opt/flex/lib -lfl -lm
 f66dump.o: f66dump.c field_desc.h y.tab.h
 
-lex.yy.o: lex.yy.c get_card.h y.tab.h
+lex.yy.o: lex.yy.c getcard.h y.tab.h
 lex.yy.c: fortran66.l
 	flex -i -l $<
 
-get_card.o: get_card.c get_card.h
+getcard.o: getcard.c getcard.h
 
 y.tab.o: y.tab.c field_desc.h y.tab.h
 y.tab.h: fortran66.y

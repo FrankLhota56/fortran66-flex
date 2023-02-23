@@ -93,17 +93,17 @@ This one character change transformed the DO loop start into a simple assignment
 
 Hollerith cards are now a historic relic. Soon after Fortran 66, compilers read their programs from text files. The yacc / lex tools are certainly designed with files in mind. So how do we reconcile file input with the Fortran 66 anticated card format?
 
-#### The `get_card` Function
-The function `get_card` was written to provide input to programs expecting a Hollerith card format. One of its parameters is the card length. When `get_card` reads a line, it adjusts the part of the before the new line to be exactly as long as the card.
+#### The `getcard` Function
+The function `getcard` was written to provide input to programs expecting a Hollerith card format. One of its parameters is the card length. When `getcard` reads a line, it adjusts the part of the before the new line to be exactly as long as the card.
 - If the line is shorter than the card length, the line is padded on the right with blanks;
 - If the line is longer than the card length, it is trimmed on the right.
 
-If successful, `get_card` returns a buffer with the line adjusted to card length, followed by a new line character.
+If successful, `getcard` returns a buffer with the line adjusted to card length, followed by a new line character.
 
-This function also provides support for expanding tab characters. Tabs are not used on Hollerith cards, but they are quite useful in modern text files, especially when you need to place text in particular fields. The `get_card` function takes a parameter for the length of a tab stop. If this parameter is positive, then each tab is converted into one or more blanks to get to the next tab stop. The line length adjustment is done after any tab expansion.
+This function also provides support for expanding tab characters. Tabs are not used on Hollerith cards, but they are quite useful in modern text files, especially when you need to place text in particular fields. The `getcard` function takes a parameter for the length of a tab stop. If this parameter is positive, then each tab is converted into one or more blanks to get to the next tab stop. The line length adjustment is done after any tab expansion.
 
 #### Defining `YY_INPUT` for Card Input
-Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `get_card` function. The `get_card` calls in this macro use tab stops of length 6, meaning that if a line that starts with a tab, then the rest of the line is in the statement field.
+Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `getcard` function. The `getcard` calls in this macro use tab stops of length 6, meaning that if a line that starts with a tab, then the rest of the line is in the statement field.
 
 ### Case Sensitivity
 

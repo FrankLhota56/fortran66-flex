@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 /**
- * get_card reads a line from a file as a simulated punch card.
+ * getcard reads a line from a file as a simulated punch card.
  *
  * Cards are of fixed length, usually 80 characters. The tab character is often
  * not supported, so this function can replace tabs with spaces.
@@ -25,6 +25,6 @@
  *
  * Return pointer to the card if successful, NULL if end of file or error.
  */
-extern char *get_card(FILE *in, char *card, size_t cardlen, size_t tablen);
+extern char *getcard(FILE *in, char *card, size_t cardlen, size_t tablen);
 
 #endif // ndef __GETCARD__H_

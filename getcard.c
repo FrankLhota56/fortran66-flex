@@ -1,10 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "get_card.h"
-
-#ifndef min
-#define min(x, y) (((x) < (y)) ? (x) : (y))
-#endif
+#include "getcard.h"
 
 static inline size_t padcard(char *card, size_t pos, size_t cardlen)
 {
@@ -12,7 +8,7 @@ static inline size_t padcard(char *card, size_t pos, size_t cardlen)
     return cardlen;
 }
 
-char *get_card(FILE *in, char *card, size_t cardlen, size_t tablen)
+char *getcard(FILE *in, char *card, size_t cardlen, size_t tablen)
 {
     size_t pos = 0;
     int c;
@@ -29,8 +25,9 @@ char *get_card(FILE *in, char *card, size_t cardlen, size_t tablen)
                  * Add blanks to get to next tab stop or the end of the card,
                  * whichever comes first.
                  */
-                const size_t next_tab = tablen * (pos / tablen + 1);
-                pos = padcard(card, pos, min(next_tab, cardlen));
+                const size_t tabstop = tablen * (pos / tablen + 1);
+                const size_t newpos = (tabstop < cardlen) ? tabstop : cardlen;
+                pos = padcard(card, pos, min(tabstop, newpos));
             }
             else
             {

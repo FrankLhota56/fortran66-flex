@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "field_desc.h"
-#include "get_card.h"
+#include "getcard.h"
 #include "y.tab.h"
 
 /*
@@ -637,7 +637,7 @@ size_t f66_card_input(FILE* in, char* buf, size_t max_size)
 
     while ((max_size - result) > F66_CARD_LEN)
     {
-        if (get_card(in, card, F66_CARD_LEN, F66_TAB_LEN) == NULL)
+        if (getcard(in, card, F66_CARD_LEN, F66_TAB_LEN) == NULL)
         {
             if (ferror(in)) {
                 YY_FATAL_ERROR( "input in flex scanner failed" );
