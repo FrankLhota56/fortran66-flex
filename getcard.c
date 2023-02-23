@@ -2,10 +2,10 @@
 #include <string.h>
 #include "getcard.h"
 
-static inline size_t padcard(char *card, size_t pos, size_t cardlen)
+static inline size_t padcard(char *card, size_t pos, size_t newpos)
 {
-    memset(card + pos, ' ', cardlen - pos);
-    return cardlen;
+    memset(card + pos, ' ', newpos - pos);
+    return newpos;
 }
 
 char *getcard(FILE *in, char *card, size_t cardlen, size_t tablen)
@@ -27,7 +27,7 @@ char *getcard(FILE *in, char *card, size_t cardlen, size_t tablen)
                  */
                 const size_t tabstop = tablen * (pos / tablen + 1);
                 const size_t newpos = (tabstop < cardlen) ? tabstop : cardlen;
-                pos = padcard(card, pos, min(tabstop, newpos));
+                pos = padcard(card, pos, newpos);
             }
             else
             {
