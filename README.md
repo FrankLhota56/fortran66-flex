@@ -51,7 +51,7 @@ The Fortran 66 character set lacks many of the characters used comparison and lo
 
 ### No Reserved Words
 
-Fortran 66 is one of the few languages that has absolutely no reserved words. Key words such as `IF`, `FORMAT`, and `DO` are perfectly valid Fortran 66 identifiers that could used to name variables, blocks, functions, or subprograms. This complicates determining whether a word is a key word or an identifier. For example, consider these two statements:
+Fortran 66 is one of the few languages that has absolutely no reserved words. Key words such as `IF`, `FORMAT`, and `DO` are perfectly valid Fortran 66 identifiers that could be used to name variables, blocks, functions, or subprograms. This complicates determining whether a word is a key word or an identifier. For example, consider these two statements:
 ```
       IF(END) GO TO 9000
       IF(I) = -1
