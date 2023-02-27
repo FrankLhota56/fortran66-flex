@@ -27,4 +27,4 @@
  */
 extern char *getcard(FILE *in, char *card, size_t cardlen, size_t tablen);
 
-#endif // ndef __GETCARD__H_
+#endif /* ndef __GETCARD__H_ */

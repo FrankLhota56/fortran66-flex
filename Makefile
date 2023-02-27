@@ -61,5 +61,6 @@ help: ## Print out a list of available build targets.
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-8s\033[0m %s\n", $$1, $$2}'
 	@echo
 	@echo "Variables:"
-	@echo "- Define \033[36mCOMPAT=lex\033[0m to run flex in original lex compatibility mode"
-	@echo "- Define \033[36mCOMPAT=posix\033[0m to run flex in POSIX lex compatibility mode"
+	@echo
+	@echo "- Define \033[36mCOMPAT=lex\033[0m to run flex in original lex compatibility mode."
+	@echo "- Define \033[36mCOMPAT=posix\033[0m to run flex in POSIX lex compatibility mode."
