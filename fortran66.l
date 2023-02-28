@@ -32,12 +32,12 @@ static line_type_t swap_line_type(line_type_t new_type);
  static int prev_state = 0;
 
 /*
- * f66_card_input fills an input buffer with Fortran 66 cards, returns the
+ * f66_card_input fills an input buffer with Fortran 66 card images, returns the
  * number of characters copied to the buffer. This function is used to implement
  * `YY_INPUT`.
  */
-static size_t f66_card_input(FILE* in, char* buf, size_t max_size);
-#define YY_INPUT(buf,result,max_size) (result = f66_card_input(yyin, buf, max_size))
+static size_t f66_card_input(char* buf, size_t max_size, FILE* in);
+#define YY_INPUT(buf,result,max_size) (result = f66_card_input(buf, max_size, yyin))
 
 /*
  * parse_integer parses a section of text as a Fortran 66 integer. This integer
@@ -626,7 +626,7 @@ line_type_t swap_line_type(line_type_t new_type)
  */
 #define F66_TAB_LEN 6
 
-size_t f66_card_input(FILE* in, char* buf, size_t max_size)
+size_t f66_card_input(char* buf, size_t max_size, FILE* in)
 {
     char card[F66_CARD_LEN + 2];
     size_t result = 0;
@@ -637,7 +637,7 @@ size_t f66_card_input(FILE* in, char* buf, size_t max_size)
 
     while ((max_size - result) > F66_CARD_LEN)
     {
-        if (getcard(in, card, F66_CARD_LEN, F66_TAB_LEN) == NULL)
+        if (getcard(card, F66_CARD_LEN, F66_TAB_LEN, in) == NULL)
         {
             if (ferror(in)) {
                 YY_FATAL_ERROR( "input in flex scanner failed" );

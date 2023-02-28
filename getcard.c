@@ -8,7 +8,7 @@ static inline size_t padcard(char *card, size_t pos, size_t newpos)
     return newpos;
 }
 
-char *getcard(FILE *in, char *card, size_t cardlen, size_t tablen)
+char *getcard(char *card, size_t cardlen, size_t tablen, FILE *in)
 {
     size_t pos = 0;
     int c;
