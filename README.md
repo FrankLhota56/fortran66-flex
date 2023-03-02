@@ -111,7 +111,7 @@ As noted before, the Fortran 66 character set does not include lower case letter
 
 So should a Fortran 66 compiler be case sensitive? This flex grammar was written to accomidate both caps-only and case insensitive compilers.
 - This Fortran 66 flex grammar uses upper case letters in the patterns, so this grammer could support an upper case only version of Fortran 66.
-- Every `Makefile` for this project, however, invokes flex with a command line parameter to generate a case insensitive scanner from this parser. Using this scanner, one could write Fortran 66 programs that are not all shouting.
+- The `Makefile` for this project, however, invokes flex with a command line parameter to generate a case insensitive scanner from this parser. Using this scanner, one could write Fortran 66 programs that are not all shouting.
 
 ### Tokens with Intersperced Blanks
 

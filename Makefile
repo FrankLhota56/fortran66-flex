@@ -1,4 +1,4 @@
-PACKAGE ?= fortran66.tgz
+PACKAGE ?= fortran66-flex.tgz
 FLEX_LIBDIR ?= /usr/local/opt/flex/lib
 
 BISON_OPTS := --defines --output=y.tab.c
@@ -55,12 +55,17 @@ package: clean	## Packages sources into a gzip tar file.
 	tar --create --verbose --gzip --file="$(PACKAGE)" $$(find * -type f \! -name "$(PACKAGE)")
 
 .PHONY: help
-help: ## Print out a list of available build targets.
+help: ## Print out a list of available build targets and make variables.
 	@echo "Make targets:"
 	@echo
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-8s\033[0m %s\n", $$1, $$2}'
 	@echo
 	@echo "Variables:"
 	@echo
-	@echo "- Define \033[36mCOMPAT=lex\033[0m to run flex in original lex compatibility mode."
-	@echo "- Define \033[36mCOMPAT=posix\033[0m to run flex in POSIX lex compatibility mode."
+	@echo "- \033[36mCOMPAT\033[0m is used to run flex in a lex compatibility mode."
+	@echo "    - Define \033[36mCOMPAT=lex\033[0m to run flex in original lex compatibility mode."
+	@echo "    - Define \033[36mCOMPAT=posix\033[0m to run flex in POSIX lex compatibility mode."
+	@echo "- \033[36mFLEX_LIBDIR\033[0m defines directory for the flex library"
+	@echo "    - Default: \033[36m/usr/local/opt/flex/lib\033[0m"
+	@echo "- \033[36mPACKAGE\033[0m defines the gzip tar file made by the \033[36mpackage\033[0m target"
+	@echo "    - Default: \033[36mfortran66-flex.tgz\033[0m"
