@@ -2,6 +2,8 @@
 
 Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of lex, with some helpful improvements. This grammar also works for flex run in original lex compatibility mode, and in POSIX lex compatability mode.
 
+Run the command `make help` for building tests for this grammar.
+
 ## The World Where Fortran 66 Was Developed (TLDR)
 
 To understand the quirky nature of Fortran 66, we need to take a quick review of the radically different nature of software development in the early decades of software programming.
@@ -66,7 +68,7 @@ String literals, called Hollerith constants in the Fortran 66 standard, have a v
 ```
 where 13 indicates the length of the string, and the 13 characters after the first 'H' are the characters of the string.
 
-There is no regular expression for matching a Hollerith constant. This is a real problem for the token scanner. Fortunately, these constants can only be used in limited situations, so this problem was not a deal killer. Parsing Hollerith constants, however, is more difficult that parsing more conventional string literals.
+There is no regular expression for matching a Hollerith constant. This is a real problem for the token scanner. Fortunately, these constants can only be used in limited situations, so this problem was not insurmountable. Parsing Hollerith constants, however, is more difficult that parsing more conventional string literals.
 
 ### Blanks are Mostly Ignored
 
@@ -77,7 +79,7 @@ Blanks are required to place tokens in the right field. They are also significan
 - It is legal to write the identifier `OLDX` as `OLD X`.
 - An integer constant could be written as `13 717 421`.
 
-The Fortran 66 freewheeling approach to blanks, along with the absence of reserved words, creates a lot of complications for the token scanner. Consider this Fortran 66 statement:
+The Fortran 66 freewheeling approach to blanks, along with the absence of reserved words, creates complications for the token scanner. Consider this Fortran 66 statement:
 ```
       DO 100 I = 1,5
 ```
@@ -91,14 +93,14 @@ This one character change transformed the DO loop start into a simple assignment
 
 ### Simulating Card Input
 
-Hollerith cards are now a historic relic. Soon after Fortran 66, compilers read their programs from text files. The yacc / lex tools are certainly designed with files in mind. So how do we reconcile file input with the Fortran 66 anticated card format?
+Hollerith cards are now a historic relic. Soon after Fortran 66, compilers read their programs from text files. The yacc / lex tools are certainly designed with text files in mind. So how do we reconcile file input with the Fortran 66 anticated card format?
 
 #### The `getcard` Function
-The function `getcard` was written to provide input to programs expecting a Hollerith card format. One of its parameters is the card length. When `getcard` reads a line, it adjusts the part of the before the new line to be exactly as long as the card.
+The function `getcard` was written to provide input to programs expecting a Hollerith card format. One of its parameters is the card length. When `getcard` reads a line, it adjusts the part before the new line to be exactly as long as the card.
 - If the line is shorter than the card length, the line is padded on the right with blanks;
 - If the line is longer than the card length, it is trimmed on the right.
 
-If successful, `getcard` returns a buffer with the line adjusted to card length, followed by a new line character.
+If successful, `getcard` returns a buffer with the line adjusted to card length, followed by a new line character and a null.
 
 This function also provides support for expanding tab characters. Tabs are not used on Hollerith cards, but they are quite useful in modern text files, especially when you need to place text in particular fields. The `getcard` function takes a parameter for the length of a tab stop. If this parameter is positive, then each tab is converted into one or more blanks to get to the next tab stop. The line length adjustment is done after any tab expansion.
 
@@ -115,7 +117,7 @@ So should a Fortran 66 compiler be case sensitive? This flex grammar was written
 
 ### Tokens with Intersperced Blanks
 
-Most Fortran 66 tokens can have intersperced blanks. The flex grammar for these tokens language has to reflect this.
+Most Fortran 66 tokens can have intersperced blanks. The flex grammar has to reflect this.
 - The Fortran 66 patterns for the various numeric literals include blanks among the characters that can be part of the token; these values are ignored to obtain the numeric value of the token.
 - Identifiers or literals are detected by patterns that include possible embedded blanks. To put identifiers into canonical form, these blanks are squeezed out and the letters are lower cased.
 
