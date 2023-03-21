@@ -62,10 +62,10 @@ help: ## Print out a list of available build targets and make variables.
 	@echo
 	@echo "Variables:"
 	@echo
-	@echo "- \033[36mCOMPAT\033[0m is used to run flex in a lex compatibility mode."
-	@echo "    - Define \033[36mCOMPAT=lex\033[0m to run flex in original lex compatibility mode."
-	@echo "    - Define \033[36mCOMPAT=posix\033[0m to run flex in POSIX lex compatibility mode."
-	@echo "- \033[36mFLEX_LIBDIR\033[0m defines directory for the flex library"
-	@echo "    - Default: \033[36m/usr/local/opt/flex/lib\033[0m"
-	@echo "- \033[36mPACKAGE\033[0m defines the gzip tar file made by the \033[36mpackage\033[0m target"
-	@echo "    - Default: \033[36mfortran66-flex.tgz\033[0m"
+	@echo $$'- \e[36mCOMPAT\e[0m is used to run flex in a lex compatibility mode.'
+	@echo $$'    - Define \e[36mCOMPAT=lex\e[0m to run flex in original lex compatibility mode.'
+	@echo $$'    - Define \e[36mCOMPAT=posix\e[0m to run flex in POSIX lex compatibility mode.'
+	@echo $$'- \e[36mFLEX_LIBDIR\e[0m defines directory for the flex library'
+	@echo $$'    - Default: \e[36m/usr/local/opt/flex/lib\e[0m'
+	@echo $$'- \e[36mPACKAGE\e[0m defines the gzip tar file made by the \e[36mpackage\e[0m target'
+	@echo $$'    - Default: \e[36mfortran66-flex.tgz\e[0m'
