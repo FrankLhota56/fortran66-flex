@@ -73,14 +73,18 @@ static int continuation_line_count = 0;
 /* #undef MULTI_LINE_HOLLERITH_LIT */
 
 /*
- * hollerith_start, hollerith_pos, and hollerith_end are used to build Hollerith
- * constants:
- * - hollerith_start is the start of the allocated buffer for this constant;
- * - hollerith_pos points to the next character to be filled; and
- * - hollerith_end points to the last character in the buffer, which should
+ * hollerith is used to build Hollerith constants:
+ * - hollerith.start is the start of the allocated buffer for this constant;
+ * - hollerith.pos points to the next character to be filled; and
+ * - hollerith.end points to the last character in the buffer, which should
  *   contain a null character.
  */
-static char *hollerith_start = NULL, *hollerith_pos = NULL, *hollerith_end = NULL;
+static struct {
+    char* start;
+    char* pos;
+    char* end;
+} hollerith = {NULL, NULL, NULL};
+
 /*
  * pre_hollerith_state holds the start condition before starting the latest
  * `HOLLERITH` condition.
@@ -419,9 +423,9 @@ ARRAY_IND   ("("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")")
         YY_FATAL_ERROR("Hollerith literal must have positive length");
     }
 
-    hollerith_start = calloc((size_t)len + 1, sizeof(char));
-    hollerith_end = hollerith_start + len;
-    hollerith_pos = hollerith_start;
+    hollerith.start = calloc((size_t)len + 1, sizeof(char));
+    hollerith.pos = hollerith.start;
+    hollerith.end = hollerith.start + len;
 
     pre_hollerith_state = YYSTATE;
     BEGIN(HOLLERITH);
@@ -557,7 +561,7 @@ ARRAY_IND   ("("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")")
 }
 
 <HOLLERITH>.+ {
-    size_t remaining = hollerith_end - hollerith_pos;
+    size_t remaining = hollerith.end - hollerith.pos;
 
     #ifndef MULTI_LINE_HOLLERITH_LIT
     if (yyleng < remaining) {
@@ -569,15 +573,13 @@ ARRAY_IND   ("("{SEP}{SUBSCRIPT}({SEP},{SEP}{SUBSCRIPT})*{SEP}")")
         yyless(remaining);
     }
 
-    memcpy(hollerith_pos, yytext, yyleng);
-    hollerith_pos += yyleng;
+    memcpy(hollerith.pos, yytext, yyleng);
+    hollerith.pos += yyleng;
 
-    if (hollerith_pos >= hollerith_end) {
+    if (hollerith.pos >= hollerith.end) {
         BEGIN(pre_hollerith_state);
-        yylval.hol = hollerith_start;
-        hollerith_start = NULL;
-        hollerith_pos   = NULL;
-        hollerith_end   = NULL;
+        yylval.hol = hollerith.start;
+        hollerith.start = hollerith.pos = hollerith.end = NULL;
         return HOLLERITH_LIT;
     }
 }
@@ -608,7 +610,7 @@ line_type_t swap_line_type(line_type_t new_type)
     const line_type_t old_type = line_type;
 
     #ifdef MULTI_LINE_HOLLERITH_LIT
-    if (new_type != LINETYPE_CONTINUATION && hollerith_pos != NULL) {
+    if (new_type != LINETYPE_CONTINUATION && hollerith.pos != NULL) {
         YY_FATAL_ERROR("Hollerith constant is incomplete");
     }
     #endif /* def MULTI_LINE_HOLLERITH_LIT */
