@@ -14,7 +14,7 @@ ifeq ($(COMPAT),posix)
 	FLEX_OPTS := --case-insensitive --posix-compat
 endif
 
-f66dump: f66dump.o lex.yy.o getcard.o
+f66dump: f66dump.o lex.yy.o getcard.o ## Application that dumps tokens from a Fortran 66 source file.
 	$(CC) -o $@ $^ -L$(FLEX_LIBDIR) -lfl -lm
 f66dump.o: f66dump.c field_desc.h y.tab.h
 
@@ -58,7 +58,7 @@ package: clean	## Packages sources into a gzip tar file.
 help: ## Print out a list of available build targets and make variables.
 	@echo "Make targets:"
 	@echo
-	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-8s\033[0m %s\n", $$1, $$2}'
+	@grep -h -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-8s\033[0m %s\n", $$1, $$2}'
 	@echo
 	@echo "Variables:"
 	@echo
