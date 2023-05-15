@@ -60,26 +60,26 @@ Fortran 66 is one of the few languages that has absolutely no reserved words. Ke
 ```
 In the first statement, the `IF` token is a key word; in the second, the `IF` token is an array identifier.
 
-### String Literals
+### Hollerith constants
 
-String literals, called Hollerith constants in the Fortran 66 standard, have a very unusual format. A Hollerith constant is written as an integer literal _n_ representing the number of characters in the string, followed by the letter 'H', followed by the _n_ characters of the string. For example, the Hollerith constant for "HELLO, WORLD." would be written as
+In Fortran 66, String literals are called Hollerith constants. They have a format quite different from  string literals in modern language. A Hollerith constant is written as an integer literal _n_ representing the number of characters in the string, followed by the letter `H`, followed by the _n_ characters of the string. For example, the Hollerith constant for `"I LOVE FORTRAN 66"` would be written as
 ```
-13HHELLO, WORLD.
+17HI LOVE FORTRAN 66
 ```
-where 13 indicates the length of the string, and the 13 characters after the first 'H' are the characters of the string.
+where `17` indicates the length of the string, and the 17 characters after the first `H` are the characters of the string constant.
 
-There is no regular expression for matching a Hollerith constant. This is a real problem for the token scanner. Fortunately, these constants can only be used in limited situations, so this problem was not insurmountable. Parsing Hollerith constants, however, is more difficult that parsing more conventional string literals.
+A real concern for the token scanner is that there is no regular expression for matching a Hollerith constant. Fortunately, these constants can only be used in limited situations where the lack of a regular expression was not an insurmountable problem. Parsing Hollerith constants, however, is more difficult that parsing string literals in newer languages.
 
 ### Blanks are Mostly Ignored
 
 To avoid errors caused by misreading where the blanks should go, the Fortran 66 standard treats blanks in a very cavalier fashion: in most cases, they can be added or left out without effecting program correctness.
 
-Blanks are required to place tokens in the right field. They are also significant in Hollerith constants. But outside of these cases, blanks may be used, or excluded, anywhere.
-- A Fortran GO TO statement could either start with `GO TO` or `GOTO`.
-- It is legal to write the identifier `OLDX` as `OLD X`.
-- An integer constant could be written as `13 717 421`.
+Blanks are required to place tokens in the right field. They are also significant in Hollerith constants. But outside of these cases, blanks may be used, or excluded, nearly anywhere.
+- A Fortran GO TO statement could start with either `GO TO` or `GOTO`.
+- Blanks can be inserted in identifiers, e.g. `OLDX` can be written as `OLD X`.
+- Numeric literals can also contain blanks, e.g. `13 717 421`.
 
-The Fortran 66 freewheeling approach to blanks, along with the absence of reserved words, creates complications for the token scanner. Consider this Fortran 66 statement:
+The Fortran 66 freewheeling approach to blanks, along with the absence of reserved words, creates complications for the token scanner. For example, consider this Fortran 66 statement:
 ```
       DO 100 I = 1,5
 ```
@@ -96,7 +96,7 @@ This one character change transformed the DO loop start into a simple assignment
 Hollerith cards are now a historic relic. Soon after Fortran 66, compilers read their programs from text files. The yacc / lex tools are certainly designed with text files in mind. So how do we reconcile file input with the Fortran 66 anticated card format?
 
 #### The `getcard` Function
-The function `getcard` was written to provide input to programs expecting a Hollerith card format. One of its parameters is the card length. When `getcard` reads a line, it adjusts the part before the new line to be exactly as long as the card.
+The function `getcard` was written to provide input to programs expecting a Hollerith card format. One of its parameters is the card length. Like `fgets`, this function reads a line from a file stream. The difference is that when `getcard` reads a line, it adjusts the part before the new line to be exactly as long as a Hollerith card.
 - If the line is shorter than the card length, the line is padded on the right with blanks;
 - If the line is longer than the card length, it is trimmed on the right.
 
@@ -121,7 +121,7 @@ Most Fortran 66 tokens can have intersperced blanks. The flex grammar has to ref
 - The Fortran 66 patterns for the various numeric literals include blanks among the characters that can be part of the token; these values are ignored to obtain the numeric value of the token.
 - Identifiers or literals are detected by patterns that include possible embedded blanks. To put identifiers into canonical form, these blanks are squeezed out and the letters are lower cased.
 
-### Detecting End of Statement
+### Detecting Statement Endings
 
 A Fortran 66 parser requires an indication of statement ending, so this grammar will produce a token `EOS` at the end of every statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of a statement. Instead, the end of a Fortran 66 statement is indicated by a change in the line type.
 
