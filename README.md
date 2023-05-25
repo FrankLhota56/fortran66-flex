@@ -1,6 +1,6 @@
 # Fortran 66 Flex Grammar
 
-Most compiler development tools, such as Lex and Yacc, are geared for Pascal / C derived languages, and are hard to use on older languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of lex, with some helpful improvements. This grammar also works for flex run in original lex compatibility mode, and in POSIX lex compatability mode.
+The legacy compiler development tools Lex and Yacc are geared for Pascal / C derived languages, and are hard to use on first generation languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of lex, with some helpful improvements. This grammar also works for flex run in original lex compatibility mode, and in POSIX lex compatability mode.
 
 Run the command `make help` for building tests for this grammar.
 
@@ -14,7 +14,7 @@ Early assembler programs would expect that parts of an instruction, such as the 
 
 ## Why Scanning Fortran 66 Tokens is Hard
 
-The [Fortran 66 standard](https://archive.org/details/ansi-x-3.9-1966-fortran-66) is quite different from any current language, including recent versions of Fortran. This standard predates many innovations that have become standard. Other unusual Fortran 66 features are motivated by the coding sheet / Hollerith card process of that era.
+The [Fortran 66 standard](https://archive.org/details/ansi-x-3.9-1966-fortran-66) is quite different from any current language, including recent versions of Fortran. This standard predates many innovations that have become common in modern languages. Other unusual Fortran 66 features are motivated by the coding sheet / Hollerith card process of that era.
 
 The novel nature of the Fortran 66 makes it a particularly difficult to tokenize, for the following reasons.
 
@@ -31,7 +31,7 @@ A Fortran 66 line that starts with the character 'C' is a comment, and the rest 
 | Field Name   | Columns | Description     |
 |--------------|---------|-----------------|
 | Label        | 1 - 5   | Label for the statement on this line |
-| Continuation | 6       | Specifies if this line continues statement on previous line |
+| Continuation | 6       | Indicates whether this line continues the statement on previous line |
 | Statement    | 7 - 72  | Statement contents |
 
 This field approach provides numerous problems for the token scanner.
@@ -105,13 +105,13 @@ If successful, `getcard` returns a buffer with the line adjusted to card length,
 This function also provides support for expanding tab characters. Tabs are not used on Hollerith cards, but they are quite useful in modern text files, especially when you need to place text in particular fields. The `getcard` function takes a parameter for the length of a tab stop. If this parameter is positive, then each tab is converted into one or more blanks to get to the next tab stop. The line length adjustment is done after any tab expansion.
 
 #### Defining `YY_INPUT` for Card Input
-Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `getcard` function. The `getcard` calls in this macro use tab stops of length 6, meaning that if a line that starts with a tab, then the rest of the line is in the statement field.
+Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `getcard` function. The `getcard` calls in this macro use tab stops of length 6, meaning that a tab at the start of a line will the statement field.
 
 ### Case Sensitivity
 
 As noted before, the Fortran 66 character set does not include lower case letters, so arguably, the Fortran 66 grammar should require that the programs be written in all caps. That is too ugly to be acceptable by modern standards. Later versions of Fortran are case insensitive.
 
-So should a Fortran 66 compiler be case sensitive? This flex grammar was written to accomidate both caps-only and case insensitive compilers.
+So should a Fortran 66 compiler be case sensitive? This flex grammar was written to accomidate both an upper case only and a case insensitive compiler.
 - This Fortran 66 flex grammar uses upper case letters in the patterns, so this grammer could support an upper case only version of Fortran 66.
 - The `Makefile` for this project, however, invokes flex with a command line parameter to generate a case insensitive scanner from this parser. Using this scanner, one could write Fortran 66 programs that are not all shouting.
 
@@ -161,10 +161,10 @@ To avoid these warning and possibly errors, the patterns for matching statements
 
 ### Building Hollerith Constants
 
-When the start of a Hollerith constant is detected, this scanner computes the text length, then begins the start condition `HOLLERITH`. In this conditon, blanks are significant. While in the `HOLLERITH` condition, statement field text is transferred to an allocated buffer until this buffer grows to the specified length. Once we reach that length, the scanner restores the start condition that was active before beginning `HOLLERITH`, and return a Hollerith constant token with this buffer.
+When the start of a Hollerith constant is detected, this scanner computes the text length, then begins the start condition `HOLLERITH`. In this conditon, blanks are significant. While in the `HOLLERITH` condition, statement field text is transferred to an allocated buffer until this buffer grows to the specified length. Once we reach that length, the scanner restores the start condition that was active before beginning `HOLLERITH`, and return a Hollerith constant token with this buffer as its value.
 
 This flex grammar allows a Hollerith constant to span multiple lines. The standard does not explicitly require support for this, but the grammar supports it for two reasons:
-1. There are 1960's code samples with multi-line Hollerith constants; and
+1. There are 1960's Fortran code samples with multi-line Hollerith constants; and
 1. If a Hollerith constant is limited to one line, then no such constant could be longer than 63 characters.
 
 To change this grammar so that Hollerith literals are restricted to a single line, comment out the definition of the macro `MULTI_LINE_HOLLERITH_LIT` in `fortran66.l`.
