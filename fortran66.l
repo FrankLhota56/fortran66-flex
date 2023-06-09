@@ -9,6 +9,9 @@
 #include "getcard.h"
 #include "y.tab.h"
 
+#define YY_NO_UNPUT 1
+#define YY_NO_INPUT 1
+
 /*
  * line_type_tag enumerates the Fortran 66 lines types documented in section 3.3
  * of the standard.
@@ -775,7 +778,6 @@ field_desc_t parse_real_field_desc(const char *text) {
 
 field_desc_t parse_blank_field_desc(const char *text) {
     field_desc_t result;
-    char *x;
 
     result.scale = 0;
     result.repeat = 1;
