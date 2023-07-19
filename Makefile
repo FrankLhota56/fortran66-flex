@@ -4,12 +4,12 @@ FLEX_LIBDIR ?= /usr/local/opt/flex/lib
 BISON_OPTS := --defines --output=y.tab.c
 FLEX_OPTS := --case-insensitive
 
-COMPAT ?= none
-ifeq ($(COMPAT),lex)
+FLEX_COMPAT ?= none
+ifeq ($(FLEX_COMPAT),lex)
 	BISON_OPTS := --defines --yacc
 	FLEX_OPTS := --case-insensitive --lex-compat
 endif
-ifeq ($(COMPAT),posix)
+ifeq ($(FLEX_COMPAT),posix)
 	BISON_OPTS := --defines --yacc
 	FLEX_OPTS := --case-insensitive --posix-compat
 endif
@@ -62,9 +62,9 @@ help: ## Print out a list of available build targets and make variables.
 	@echo
 	@echo "Variables:"
 	@echo
-	@echo $$'- \e[36mCOMPAT\e[0m is used to run flex in a lex compatibility mode.'
-	@echo $$'    - Define \e[36mCOMPAT=lex\e[0m to run flex in original lex compatibility mode.'
-	@echo $$'    - Define \e[36mCOMPAT=posix\e[0m to run flex in POSIX lex compatibility mode.'
+	@echo $$'- \e[36mFLEX_COMPAT\e[0m is used to run flex in a lex compatibility mode.'
+	@echo $$'    - Define \e[36mFLEX_COMPAT=lex\e[0m to run flex in original lex compatibility mode.'
+	@echo $$'    - Define \e[36mFLEX_COMPAT=posix\e[0m to run flex in POSIX lex compatibility mode.'
 	@echo $$'- \e[36mFLEX_LIBDIR\e[0m defines directory for the flex library'
 	@echo $$'    - Default: \e[36m/usr/local/opt/flex/lib\e[0m'
 	@echo $$'- \e[36mPACKAGE\e[0m defines the gzip tar file made by the \e[36mpackage\e[0m target'
