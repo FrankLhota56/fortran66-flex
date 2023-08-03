@@ -33,80 +33,82 @@ int main(int argc, char *argv[])
 
     while ((token = yylex()) > 0)
     {
-#undef DUMP_TOKEN
-#define DUMP_TOKEN(__token)                           \
-    case __token:                                     \
-        printf("Line %5d: " #__token "\n", yylineno); \
-        break
+        printf("Line %5d: ", yylineno);
 
         switch (token)
         {
-            DUMP_TOKEN(AND);
-            DUMP_TOKEN(ASSIGN);
-            DUMP_TOKEN(BACKSPACE);
-            DUMP_TOKEN(BLOCK);
-            DUMP_TOKEN(CALL);
-            DUMP_TOKEN(COMPLEX);
-            DUMP_TOKEN(CONTINUE);
-            DUMP_TOKEN(DATA);
-            DUMP_TOKEN(DIMENSION);
-            DUMP_TOKEN(DO);
-            DUMP_TOKEN(DOUBLE);
-            DUMP_TOKEN(END);
-            DUMP_TOKEN(EOS);
-            DUMP_TOKEN(EQ);
-            DUMP_TOKEN(EQUIVALENCE);
-            DUMP_TOKEN(EXPONENTIATION);
-            DUMP_TOKEN(EXTERNAL);
-            DUMP_TOKEN(FALSE);
-            DUMP_TOKEN(FORMAT);
-            DUMP_TOKEN(FUNCTION);
-            DUMP_TOKEN(FIELD_SEP);
-            DUMP_TOKEN(GE);
-            DUMP_TOKEN(GO);
-            DUMP_TOKEN(GT);
-            DUMP_TOKEN(IF);
-            DUMP_TOKEN(INTEGER);
-            DUMP_TOKEN(LE);
-            DUMP_TOKEN(LOGICAL);
-            DUMP_TOKEN(LT);
-            DUMP_TOKEN(NE);
-            DUMP_TOKEN(NOT);
-            DUMP_TOKEN(OR);
-            DUMP_TOKEN(PAUSE);
-            DUMP_TOKEN(PRECISION);
-            DUMP_TOKEN(READ);
-            DUMP_TOKEN(REAL);
-            DUMP_TOKEN(RETURN);
-            DUMP_TOKEN(REWIND);
-            DUMP_TOKEN(STOP);
-            DUMP_TOKEN(SUBROUTINE);
-            DUMP_TOKEN(TO);
-            DUMP_TOKEN(TRUE);
-            DUMP_TOKEN(WRITE);
+#undef DUMP_TOKEN
+#define DUMP_TOKEN(__token)        \
+        case __token:              \
+            printf(#__token "\n"); \
+            break
+
+        DUMP_TOKEN(AND);
+        DUMP_TOKEN(ASSIGN);
+        DUMP_TOKEN(BACKSPACE);
+        DUMP_TOKEN(BLOCK);
+        DUMP_TOKEN(CALL);
+        DUMP_TOKEN(COMPLEX);
+        DUMP_TOKEN(CONTINUE);
+        DUMP_TOKEN(DATA);
+        DUMP_TOKEN(DIMENSION);
+        DUMP_TOKEN(DO);
+        DUMP_TOKEN(DOUBLE);
+        DUMP_TOKEN(END);
+        DUMP_TOKEN(EOS);
+        DUMP_TOKEN(EQ);
+        DUMP_TOKEN(EQUIVALENCE);
+        DUMP_TOKEN(EXPONENTIATION);
+        DUMP_TOKEN(EXTERNAL);
+        DUMP_TOKEN(FALSE);
+        DUMP_TOKEN(FORMAT);
+        DUMP_TOKEN(FUNCTION);
+        DUMP_TOKEN(FIELD_SEP);
+        DUMP_TOKEN(GE);
+        DUMP_TOKEN(GO);
+        DUMP_TOKEN(GT);
+        DUMP_TOKEN(IF);
+        DUMP_TOKEN(INTEGER);
+        DUMP_TOKEN(LE);
+        DUMP_TOKEN(LOGICAL);
+        DUMP_TOKEN(LT);
+        DUMP_TOKEN(NE);
+        DUMP_TOKEN(NOT);
+        DUMP_TOKEN(OR);
+        DUMP_TOKEN(PAUSE);
+        DUMP_TOKEN(PRECISION);
+        DUMP_TOKEN(READ);
+        DUMP_TOKEN(REAL);
+        DUMP_TOKEN(RETURN);
+        DUMP_TOKEN(REWIND);
+        DUMP_TOKEN(STOP);
+        DUMP_TOKEN(SUBROUTINE);
+        DUMP_TOKEN(TO);
+        DUMP_TOKEN(TRUE);
+        DUMP_TOKEN(WRITE);
 
         case ID:
-            printf("Line %5d: ID(%s)\n", yylineno, yylval.id);
+            printf("ID(%s)\n", yylval.id);
             break;
 
         case OCTAL:
-            printf("Line %5d: OCTAL(%05" PRIo16 ")\n", yylineno, yylval.oct);
+            printf("OCTAL(%05" PRIo16 ")\n", yylval.oct);
             break;
 
         case INT_LIT:
-            printf("Line %5d: INT_LIT(%" PRIdPTR ")\n", yylineno, yylval.integer);
+            printf("INT_LIT(%" PRIdPTR ")\n", yylval.integer);
             break;
 
         case REAL_LIT:
-            printf("Line %5d: REAL_LIT(%f)\n", yylineno, yylval.real);
+            printf("REAL_LIT(%f)\n", yylval.real);
             break;
 
         case DBL_PREC_LIT:
-            printf("Line %5d: DBL_PREC_LIT(%f)\n", yylineno, yylval.dbl_pres);
+            printf("DBL_PREC_LIT(%f)\n", yylval.dbl_pres);
             break;
 
         case HOLLERITH_LIT:
-            printf("Line %5d: HOLLERITH_LIT(%s)\n", yylineno, yylval.hol);
+            printf("HOLLERITH_LIT(%s)\n", yylval.hol);
             free(yylval.hol);
             break;
 
@@ -116,7 +118,7 @@ int main(int argc, char *argv[])
             case 'A':
             case 'I':
             case 'L':
-                printf("Line %5d: FIELD_DESC(%d%c%d)\n", yylineno,
+                printf("FIELD_DESC(%d%c%d)\n",
                        yylval.field_desc.repeat, yylval.field_desc.conversion,
                        yylval.field_desc.width);
                 break;
@@ -125,19 +127,19 @@ int main(int argc, char *argv[])
             case 'E':
             case 'F':
             case 'G':
-                printf("Line %5d: FIELD_DESC(%dP%d%c%d.%d)\n", yylineno,
+                printf("FIELD_DESC(%dP%d%c%d.%d)\n",
                        yylval.field_desc.scale, yylval.field_desc.repeat,
                        yylval.field_desc.conversion, yylval.field_desc.width,
                        yylval.field_desc.fract);
                 break;
 
             case 'X':
-                printf("Line %5d: FIELD_DESC(%d%c)\n", yylineno,
+                printf("FIELD_DESC(%d%c)\n",
                        yylval.field_desc.width, yylval.field_desc.conversion);
                 break;
 
             default:
-                printf("Line %5d: FIELD_DESC(%c)\n", yylineno,
+                printf("FIELD_DESC(%c)\n",
                        yylval.field_desc.conversion);
                 break;
             }
@@ -146,7 +148,7 @@ int main(int argc, char *argv[])
         default:
             if (token < 256)
             {
-                printf("Line %5d: '%c'\n", yylineno, token);
+                printf("'%c'\n", token);
             }
             else
             {
