@@ -109,7 +109,7 @@ Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get i
 
 ### Case Sensitivity
 
-As noted before, the Fortran 66 character set does not include lower case letters, so arguably, the Fortran 66 grammar should require that the programs be written in all caps. That is too ugly to be acceptable by modern standards. Later versions of Fortran are case insensitive.
+As noted before, the Fortran 66 character set does not include lower case letters, so arguably the Fortran 66 grammar should require that the programs be written in all caps. That is too ugly to be acceptable by modern standards. Later versions of Fortran are case insensitive.
 
 So should a Fortran 66 compiler be case sensitive? This flex grammar was written to accomidate both an upper case only and a case insensitive compiler.
 - This Fortran 66 flex grammar uses upper case letters in the patterns, so this grammer could support an upper case only version of Fortran 66.
@@ -125,7 +125,7 @@ Most Fortran 66 tokens can have intersperced blanks. The flex grammar has to ref
 
 A Fortran 66 parser requires an indication of statement ending, so this grammar will produce a token `EOS` at the end of every statements. Unlike the C-like languages, there is no text such as `;` that indicates the end of a statement. Instead, the end of a Fortran 66 statement is indicated by a change in the line type.
 
-There are essentially four types of Fortran 66 lines:
+There are four types of Fortran 66 lines:
 1. Comment line;
 1. End line;
 1. Initial line (start of a statement); and
@@ -133,7 +133,7 @@ There are essentially four types of Fortran 66 lines:
 
 A Fortran 66 statement ends when the line after the statement text has a type other than Continuation.
 
-*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statement line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will appear on line 104.
+*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statement line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will be the first token on line 104.
 
 This grammar tracks the line types in order to determine line endings, as well as when to begin certain start conditions. The type `line_type_t` enumerates these four line types, and the variable `line_type` is set to the type of the current line. The `INITIAL` start condition uses patterns to determine the line type, and return `EOS` when appropriate.
 
