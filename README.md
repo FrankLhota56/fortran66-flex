@@ -105,7 +105,7 @@ If successful, `getcard` returns a buffer with the line adjusted to card length,
 This function also provides support for expanding tab characters. Tabs are not used on Hollerith cards, but they are quite useful in modern text files, especially when you need to place text in particular fields. The `getcard` function takes a parameter for the length of a tab stop. If this parameter is positive, then each tab is converted into one or more blanks to get to the next tab stop. The line length adjustment is done after any tab expansion.
 
 #### Defining `YY_INPUT` for Card Input
-Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `getcard` function. The `getcard` calls in this macro use tab stops of length 6, meaning that a tab at the start of a line will the statement field.
+Here we make use of the lex / flex `YY_INPUT` macro. This macro is used to get input from the file being compiled. The lex / flex grammar can define its own version of this macro. This grammar defines `YY_INPUT` to read in one or more cards of length 72 using the `getcard` function. The `getcard` calls in this macro use tab stops of length 6, meaning that a tab at the start of a line will tab to the start of the statement field.
 
 ### Case Sensitivity
 
