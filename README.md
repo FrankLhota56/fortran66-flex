@@ -39,22 +39,6 @@ This field approach provides numerous problems for the token scanner.
 - The continuation field needs to be examined to determine if the statement on the previous line has reached its end - even if it is preceded by the label for the next statement.
 - If column 6 indicates that this line is a continuation of the previous line, then columns 1 through 5 are to be ignored, and could contain anything.
 
-### Limited Character Set
-
-Due to the limitations of some of the platforms available in 1966, the Fortran 66 standard defines the language using a very small character set, consisting of:
-- The letters `A` through `Z` (upper case only);
-- The digits `0` through `9`;
-- The blank character; and
-- The special characters `=`, `+`, `-`, `*`, `/`, `(`, `)`, `,`, `.`, and `$`.
-
-Because this limited character set leaves out lower case letters, virtually all Fortran 66 code samples are written in all caps, which is now viewed as shouting. Also absent from this limited character set is the horizontal tab, so those cannot be used to get text into the proper field.
-
-The Fortran 66 character set lacks many of the characters used comparison and logical operators, such as `<` or `|`. The Fortran 66 version of these operators consist of identifiers placed between two periods, for example the "less than" operator in Fortran 66 is `.LT.` instead of `<`. Given the use of periods in real constants, this causes some complications. For example:
-```
-      VALID = DIGIT .GE. 0 .AND. DIGIT .LE. 9
-```
-Consider the period between `0` and the word `AND` in this statement. The scanner must not parse `"0 ."` as a real constant, because in this context, this period starts the `.AND.` operator.
-
 ### No Reserved Words
 
 Fortran 66 is one of the few languages that has absolutely no reserved words. Key words such as `IF`, `FORMAT`, and `DO` are perfectly valid Fortran 66 identifiers that could be used to name variables, blocks, functions, or subprograms. This complicates determining whether a word is a key word or an identifier. For example, consider these two statements:
@@ -92,6 +76,22 @@ This statement is the start of a `DO` loop, ending with the statement labeled 10
       DO 100 I = 1.5
 ```
 This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also almost completely changes the tokens the scanner should return.
+
+### Limited Character Set
+
+Due to the limitations of some of the platforms available in 1966, the Fortran 66 standard defines the language using a very small character set, consisting of:
+- The letters `A` through `Z` (upper case only);
+- The digits `0` through `9`;
+- The blank character; and
+- The special characters `=`, `+`, `-`, `*`, `/`, `(`, `)`, `,`, `.`, and `$`.
+
+Because this limited character set leaves out lower case letters, virtually all Fortran 66 code samples are written in all caps, which is now viewed as shouting. Also absent from this limited character set is the horizontal tab, so those cannot be used to get text into the proper field.
+
+The Fortran 66 character set lacks many of the characters used comparison and logical operators, such as `<` or `|`. The Fortran 66 version of these operators consist of identifiers placed between two periods, for example the "less than" operator in Fortran 66 is `.LT.` instead of `<`. Given the use of periods in real constants, this causes some complications. For example:
+```
+      VALID = DIGIT .GE. 0 .AND. DIGIT .LE. 9
+```
+Consider the period between `0` and the word `AND` in this statement. The scanner must not parse `"0 ."` as a real constant, because in this context, this period starts the `.AND.` operator.
 
 ## Implementation Details
 
