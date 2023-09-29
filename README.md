@@ -49,7 +49,11 @@ Due to the limitations of some of the platforms available in 1966, the Fortran 6
 
 Because this limited character set leaves out lower case letters, virtually all Fortran 66 code samples are written in all caps, which is now viewed as shouting. Also absent from this limited character set is the horizontal tab, so those cannot be used to get text into the proper field.
 
-The Fortran 66 character set lacks many of the characters used comparison and logical operators, such as `<` or `|`. The Fortran 66 version of these operators consist of identifiers placed between two periods, for example the "less than" operator in Fortran 66 is `.LT.` instead of `<`. Given the use of periods in real constants, this can create some tricky problems.
+The Fortran 66 character set lacks many of the characters used comparison and logical operators, such as `<` or `|`. The Fortran 66 version of these operators consist of identifiers placed between two periods, for example the "less than" operator in Fortran 66 is `.LT.` instead of `<`. Given the use of periods in real constants, this causes some complications. For example:
+```
+      VALID = DIGIT .GE. 0 .AND. DIGIT .LE. 9
+```
+Consider the period between `0` and the word `AND` in this statement. The scanner must not parse `"0 ."` as a real constant, because in this context, this period starts the `.AND.` operator.
 
 ### No Reserved Words
 
@@ -133,9 +137,9 @@ There are four types of Fortran 66 lines:
 
 A Fortran 66 statement ends when the line after the statement text has a type other than Continuation.
 
-*Note:* Since the line after the statement text has to be scanned in order to determine if the statement has ended, the `EOS` token will always have the line number of the line after the last statement line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will be the first token on line 104.
+*Note:* Since the line after the statement text has to be scanned in order to determine that the statement has ended, the `EOS` token will always have the line number of the line after the last statement line. For example, if a statement occupies lines 101 through 103, the `EOS` token for that statement will be the first token on line 104.
 
-This grammar tracks the line types in order to determine line endings, as well as when to begin certain start conditions. The type `line_type_t` enumerates these four line types, and the variable `line_type` is set to the type of the current line. The `INITIAL` start condition uses patterns to determine the line type, and return `EOS` when appropriate.
+This grammar tracks the line types in order to determine line endings, as well as when to begin certain start conditions. The type `line_type_t` enumerates these four line types, and the variable `line_type` is set to the type of the current line. The `INITIAL` start condition uses patterns to determine the line type, and return the `EOS` token when appropriate.
 
 ### Scanning Statement Labels
 
