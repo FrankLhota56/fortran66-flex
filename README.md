@@ -6,7 +6,7 @@ Run the command `make help` for building tests for this grammar.
 
 ## The World Where Fortran 66 Was Developed (TLDR)
 
-To understand the quirky nature of Fortran 66, we need to take a quick review of the radically different nature of software development in the early decades of software programming.
+To understand the quirky nature of Fortran 66, we need to take a quick review of the radically different nature of software development in the early decades of programming.
 
 The software development process was quite different half a century ago. Before Fortran, most programs were written in assembler. In the early decades of computers, programs were often hand written on coding sheets; these sheets would then be handed to card punch operators that would turn the program into a deck of Hollerith (punch) cards, then these cards would be processed by the assembler / compiler.
 
