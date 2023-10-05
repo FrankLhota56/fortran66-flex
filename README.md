@@ -31,7 +31,7 @@ A Fortran 66 line that starts with the character 'C' is a comment, and the rest 
 | Field Name   | Columns | Description     |
 |--------------|---------|-----------------|
 | Label        | 1 - 5   | Label for the statement on this line |
-| Continuation | 6       | Indicates whether this line continues the statement on previous line |
+| Continuation | 6       | Indicates if this line continues the statement on the previous line |
 | Statement    | 7 - 72  | Statement contents |
 
 This field approach provides numerous problems for the token scanner.
