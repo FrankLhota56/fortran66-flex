@@ -67,7 +67,7 @@ Blanks are required to place tokens in the right field. They are also significan
 - Blanks can be inserted in identifiers, e.g. `OLDX` can be written as `OLD X`.
 - Numeric literals can also contain blanks, e.g. `13 717 421`.
 
-The Fortran 66 freewheeling approach to blanks, along with the absence of reserved words, creates complications for the token scanner. For example, consider this Fortran 66 statement:
+The Fortran 66 freewheeling approach to blanks, along with the absence of reserved words, complicates token parsing. For example, consider this Fortran 66 statement:
 ```
       DO 100 I = 1,5
 ```
@@ -75,7 +75,7 @@ This statement is the start of a `DO` loop, ending with the statement labeled 10
 ```
       DO 100 I = 1.5
 ```
-This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also almost completely changes the tokens the scanner should return.
+This one character change transformed the DO loop start into a simple assignment statement that assigns the real constant 1.5 to the variable `DO100I`. The change not only changes how the statement should be parsed; it also dramaically changes the tokens the scanner should return.
 
 ### Limited Character Set
 
