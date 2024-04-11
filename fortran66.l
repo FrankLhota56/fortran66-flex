@@ -137,7 +137,7 @@ static field_desc_t parse_real_field_desc(const char *text);
 /* parse_blank_field_desc parses a `FORMAT` statement blank field description */
 static field_desc_t parse_blank_field_desc(const char *text);
 /*
- * parse_other_field_desc parses a `FORMAT` statement HOLLERITY, INTEGER, or
+ * parse_other_field_desc parses a `FORMAT` statement HOLLERITH, INTEGER, or
  * LOGICAL field description
  */
 static field_desc_t parse_other_field_desc(const char *text);
