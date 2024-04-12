@@ -2,7 +2,7 @@
 
 The legacy compiler development tools Lex and Yacc are geared for Pascal / C derived languages, and are hard to use on first generation languages. In particular, it was frequently noted that it is extremely difficult to write a Lex grammar for Fortran 66. This project proves that such a Lex grammar is possible. It provides a [Flex](https://ftp.gnu.org/old-gnu/Manuals/flex-2.5.4/html_mono/flex.html) grammer for Fortran 66. Flex is a GNU version of lex, with some helpful improvements. This grammar also works for flex run in original lex compatibility mode, and in POSIX lex compatability mode.
 
-Run the command `make help` for building tests for this grammar.
+Run the command `make help` for help with building and testing this grammar.
 
 ## The World Where Fortran 66 Was Developed (TLDR)
 
@@ -30,7 +30,7 @@ A Fortran 66 line that starts with the character 'C' is a comment, and the rest 
 
 | Field Name   | Columns | Description     |
 |--------------|---------|-----------------|
-| Label        | 1 - 5   | Label for the statement on this line |
+| Label        | 1 - 5   | Label for the statement starting on this line |
 | Continuation | 6       | Indicates if this line continues the statement on the previous line |
 | Statement    | 7 - 72  | Statement contents |
 
