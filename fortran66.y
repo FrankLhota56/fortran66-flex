@@ -396,15 +396,13 @@ factor:
   | primary EXPONENTIATION primary
   ;
 
-termp:
-  | factor
-  | termp '*' factor
+term:
+  factor
+  | term '/' factor
+  | term '*' factor
   ;
 
-term:
-  termp
-  | termp '/' factor
-  ;
+signed_term: sign term;
 
 simple_arithmetic_expression:
   term
@@ -412,14 +410,12 @@ simple_arithmetic_expression:
   ;
 
 arithmetic_expression:
-  optional_sign simple_arithmetic_expression
+  simple_arithmetic_expression
+  | signed_term
+  | signed_term sign simple_arithmetic_expression
   ;
 
 sign: '+' | '-';
-optional_sign:
-  /* empty */
-  | sign
-  ;
 
 optional_index_scale:
   /* empty */
