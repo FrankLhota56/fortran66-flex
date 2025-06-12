@@ -2,10 +2,10 @@
 #include <string.h>
 #include "getcard.h"
 
-static inline size_t padcard(char *card, size_t pos, size_t newpos)
+static inline void padcard(char *card, size_t *pos, size_t newpos)
 {
-    memset(card + pos, ' ', newpos - pos);
-    return newpos;
+    memset(card + *pos, ' ', newpos - *pos);
+    *pos = newpos;
 }
 
 char *getcard(char *card, size_t cardlen, size_t tablen, FILE *in)
@@ -27,7 +27,7 @@ char *getcard(char *card, size_t cardlen, size_t tablen, FILE *in)
                  */
                 const size_t tabstop = tablen * (pos / tablen + 1);
                 const size_t newpos = (tabstop < cardlen) ? tabstop : cardlen;
-                pos = padcard(card, pos, newpos);
+                padcard(card, &pos, newpos);
             }
             else
             {
@@ -36,7 +36,7 @@ char *getcard(char *card, size_t cardlen, size_t tablen, FILE *in)
             break;
         case '\n':
             /* Add blanks to fill out the rest of the card. */
-            pos = padcard(card, pos, cardlen);
+            padcard(card, &pos, cardlen);
             break;
         case EOF:
             if (pos == 0)
@@ -52,7 +52,7 @@ char *getcard(char *card, size_t cardlen, size_t tablen, FILE *in)
              * The last line in the file did not end with a newline; create a
              * full card for this line, will return NULL next time.
              */
-            pos = padcard(card, pos, cardlen);
+            padcard(card, &pos, cardlen);
             break;
         default:
             card[pos++] = c;
