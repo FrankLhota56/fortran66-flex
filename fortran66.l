@@ -10,7 +10,7 @@
 #include "y.tab.h"
 
 #define YY_NO_UNPUT 1
-#define YY_NO_INPUT 1
+/* #undef YY_NO_INPUT */
 
 /*
  * line_type_tag enumerates the Fortran 66 lines types documented in section 3.3
